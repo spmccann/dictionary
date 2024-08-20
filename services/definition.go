@@ -3,7 +3,6 @@ package services
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"os"
 	"strings"
 )
@@ -21,17 +20,18 @@ var (
 func unmarshal() error {
 	contents, err := os.ReadFile("data/EDMTDictionary.json")
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("failed to read file: %w", err)
 	}
-	err = json.Unmarshal(contents, &dictionary)
-	if err != nil {
-		fmt.Println("error: ", err)
+	if err := json.Unmarshal(contents, &dictionary); err != nil {
+		return fmt.Errorf("failed to unmarshal JSON: %w", err)
 	}
-	return err
+	return nil
 }
 
 func SetupDictionary() {
-	unmarshal()
+	if err := unmarshal(); err != nil {
+		fmt.Println("Error setting up dictionary:", err)
+	}
 }
 
 func preprocess(word string) string {
@@ -42,16 +42,15 @@ func preprocess(word string) string {
 
 func BinarySearch(search string) [][]string {
 	search = preprocess(search)
+	searchWord := wordToA(search)
 	left := 0
 	right := len(dictionary) - 1
 	for left <= right {
-		middle := int(math.Floor(float64(left+right) / 2))
-		searchWord := wordToA(search)
+		middle := (left + right) / 2
 		current := preprocess(dictionary[middle].Word)
 		currentWord := wordToA(current)
 		if search == current {
-			result := checkMultiple(middle)
-			return result
+			return checkMultiple(middle)
 		}
 		for i := 0; i < len(searchWord); i++ {
 			if i == len(currentWord) { // e.g. search: management, current: manage
@@ -74,10 +73,12 @@ func BinarySearch(search string) [][]string {
 	return [][]string{}
 }
 
+const windowSize = 25
+
 func checkMultiple(loc int) [][]string {
 	var wordList [][]string
-	before := loc - 25
-	after := loc + 25
+	before := loc - windowSize
+	after := loc + windowSize
 	if before < 0 {
 		before = 0
 	}
