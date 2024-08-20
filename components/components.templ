@@ -1,0 +1,29 @@
+package components 
+
+templ Page() {
+	<html>
+		<head>
+			<script src="https://unpkg.com/htmx.org@2.0.2" integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ" crossorigin="anonymous"></script>
+		</head>
+		<body>
+			<h1> Clickable Dictionary </h1>
+			<div>
+				<form hx-post="/search" hx-swap="innerHTML">
+					<input type="text" name="query" placeholder="Search the Dictionary">
+					<button type="submit">Search</button>
+				</form>
+			</div>
+			<div id="search-results"></div>
+		</body>
+	</html>
+}
+
+templ Definitions(search []string) {
+	<ul>
+		for _, item := range search {
+		<li> { item } </li>
+		<li> { item } </li>
+		<li> { item } </li>
+		}
+	</ul>
+}
