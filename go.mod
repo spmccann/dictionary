@@ -1,4 +1,4 @@
-module github.com/spmccann/clickable-dictionary
+module github.com/spmccann/dictionary
 
 go 1.22.4
 
