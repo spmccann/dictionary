@@ -1,6 +1,6 @@
 # Dictionary
 
-![dictionary](/dictionary/screenshots/Screenshot2.png)
+![dictionary](https://github.com/spmccann/dictionary/blob/main/screenshots/Screenshot2.png)
 
 ## What it does 
 The webpage swiftly (and without refreshing the page) returns word definitions from a user search
@@ -16,7 +16,7 @@ The webpage swiftly (and without refreshing the page) returns word definitions f
 The dictionary data is a JSON file sourced from eddydn's [DictionaryDatabase](https://github.com/eddydn/DictionaryDatabase) repo which was pulled from The Online Text Plain English Dictionary (OPTED)
 
 ## Project Structure
-
+```
 .
 ├── components
 │   ├── components.templ
@@ -32,7 +32,7 @@ The dictionary data is a JSON file sourced from eddydn's [DictionaryDatabase](ht
 ├── readme.md
 └── services
     └── definition.go
-
+```
 ## How To Run or View
 
 The web page has only been implemented locally. It can be accessed by cloning/forking the repo, `go run .` and viewed in the browser on localhost:3000 
