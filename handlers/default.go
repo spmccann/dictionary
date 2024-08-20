@@ -2,22 +2,44 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
-	"github.com/a-h/templ"
-	"github.com/spmccann/clickable-dictionary/components"
-	"github.com/spmccann/clickable-dictionary/services"
+	"github.com/spmccann/dictionary/components"
+	"github.com/spmccann/dictionary/services"
 )
+
+var (
+	result [][]string
+)
+
+func getHandler(w http.ResponseWriter, r *http.Request) {
+	page := components.Page(result)
+	page.Render(r.Context(), w)
+}
+
+func postHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	search := r.FormValue("search")
+
+	if r.Form.Has("search") && search != "" {
+		result = services.BinarySearch(search)
+	}
+
+	components.SearchResults(result).Render(r.Context(), w)
+}
 
 func Run() {
 	services.SetupDictionary()
-	page := components.Page()
-	result := services.BinarySearch("bacon")
-	definitions := components.Definitions(result)
-
-	http.Handle("/", templ.Handler(page))
-	http.Handle("/search", templ.Handler(definitions))
-
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			postHandler(w, r)
+			return
+		}
+		getHandler(w, r)
+	})
 	fmt.Println("Listening on :3000")
-	http.ListenAndServe(":3000", nil)
+	if err := http.ListenAndServe(":3000", nil); err != nil {
+		log.Printf("error listening: %v", err)
+	}
 }

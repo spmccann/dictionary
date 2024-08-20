@@ -1,29 +1,44 @@
 package components 
 
-templ Page() {
+import "strconv"
+
+templ search() {
+	<input class="form-control" type="search" 
+       name="search" placeholder="Search The Dictionary..." 
+       hx-post="/" 
+       hx-trigger="input changed delay:800ms, search" 
+       hx-target="#search-results"
+			 hx-on="submit: event.preventDefault()">
+}
+
+templ SearchResults(result [][]string) {
+	<div id="search-results">
+		<p> { strconv.Itoa(len(result)) } result(s) found </p>
+		for i := range result {
+			if len(result[i]) == 3 {
+			<h2>	{ result[i][0] } </h2>
+			<p>	{ result[i][1] } </p>
+			<p>	{ result[i][2] } </p>
+			}
+		}
+	</div>
+}
+
+templ Page(result [][]string) {
 	<html>
 		<head>
 			<script src="https://unpkg.com/htmx.org@2.0.2" integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ" crossorigin="anonymous"></script>
 		</head>
 		<body>
+
 			<h1>Dictionary </h1>
+
 			<div>
-				<form hx-post="/search" hx-swap="innerHTML">
-					<input type="text" name="query" placeholder="Search the Dictionary">
-					<button type="submit">Search</button>
-				</form>
+				@search()
 			</div>
-			<div id="search-results"></div>
+			@SearchResults(result)
 		</body>
 	</html>
 }
 
-templ Definitions(search []string) {
-	<ul>
-		for _, item := range search {
-		<li> { item } </li>
-		<li> { item } </li>
-		<li> { item } </li>
-		}
-	</ul>
-}
+	

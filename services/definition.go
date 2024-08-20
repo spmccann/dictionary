@@ -40,7 +40,7 @@ func preprocess(word string) string {
 	return word
 }
 
-func BinarySearch(search string) []string {
+func BinarySearch(search string) [][]string {
 	search = preprocess(search)
 	left := 0
 	right := len(dictionary) - 1
@@ -50,7 +50,7 @@ func BinarySearch(search string) []string {
 		current := preprocess(dictionary[middle].Word)
 		currentWord := wordToA(current)
 		if search == current {
-			result := []string{dictionary[middle].Word, dictionary[middle].Form, dictionary[middle].Description}
+			result := checkMultiple(middle)
 			return result
 		}
 		for i := 0; i < len(searchWord); i++ {
@@ -71,7 +71,26 @@ func BinarySearch(search string) []string {
 			}
 		}
 	}
-	return []string{}
+	return [][]string{}
+}
+
+func checkMultiple(loc int) [][]string {
+	var wordList [][]string
+	before := loc - 25
+	after := loc + 25
+	if before < 0 {
+		before = 0
+	}
+	if after > len(dictionary)-1 {
+		after = len(dictionary) - 1
+	}
+	word := preprocess(dictionary[loc].Word)
+	for i := before; i <= after; i++ {
+		if preprocess(dictionary[i].Word) == word {
+			wordList = append(wordList, []string{dictionary[i].Word, dictionary[i].Form, dictionary[i].Description})
+		}
+	}
+	return wordList
 }
 
 func wordToA(word string) []string {
@@ -81,9 +100,3 @@ func wordToA(word string) []string {
 	}
 	return wordArray
 }
-
-//{
-//    "word": "Abandon",
-//    "type": "(v. t.)",
-//    "description": "To cast or drive out; to banish; to expel; to reject."
-//  },

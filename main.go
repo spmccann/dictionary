@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/spmccann/clickable-dictionary/handlers"
+	"github.com/spmccann/dictionary/handlers"
 )
 
 func main() {
